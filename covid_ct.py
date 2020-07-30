@@ -1,3 +1,4 @@
+#importing the libraries
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import MaxPool2D
@@ -12,6 +13,8 @@ import numpy as np
 import cv2
 import os
 
+
+#Tweak according to your needs
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
   # Restrict TensorFlow to only allocate 1.89GB of memory on the first GPU
@@ -25,12 +28,14 @@ if gpus:
     # Virtual devices must be set before GPUs have been initialized
     print(e)
 
+#Setting the parameters
 IMG_HEIGHT = 150
 IMG_WIDTH = 150
 BATCH_SIZE = 32
 DIR = 'Dataset/'
 
 
+#Image augmentation
 training_data = ImageDataGenerator(rescale=1./255,
                                    validation_split=0.2,
                                    horizontal_flip=True,
@@ -40,12 +45,15 @@ training_data = ImageDataGenerator(rescale=1./255,
                                    shear_range=0.05,
                                    zoom_range=0.05,)
 
+#Training data generator
 train_generator = training_data.flow_from_directory(DIR,
                                                   target_size=(IMG_HEIGHT, IMG_WIDTH),
                                                   batch_size=BATCH_SIZE,
                                                   color_mode="grayscale",
                                                   class_mode='binary',
                                                   subset="training")
+
+#Validation data generator
 validation_generator = training_data.flow_from_directory(DIR,
                                                          target_size=(IMG_HEIGHT, IMG_WIDTH),
                                                          batch_size=BATCH_SIZE,
@@ -55,18 +63,26 @@ validation_generator = training_data.flow_from_directory(DIR,
 
 
 model = Sequential()
+
 model.add(Conv2D(64,(3, 3), activation='relu', padding="same", input_shape=(IMG_HEIGHT, IMG_WIDTH, 1)))
 model.add(MaxPool2D(pool_size=(2, 2)))
+
 model.add(Conv2D(128,(3, 3), activation='relu', padding="same"))
 model.add(MaxPool2D(pool_size=(2, 2)))
+
 model.add(Conv2D(128,(3, 3), activation='relu', padding="same"))
 model.add(MaxPool2D(pool_size=(2, 2)))
+
 model.add(Flatten())
+
 model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.3))
+
 model.add(Dense(256, activation='relu'))
 model.add(Dropout(0.3))
+
 model.add(Dense(1, activation='sigmoid'))
+
 model.compile(loss='binary_crossentropy', optimizer='RMSProp', metrics=['accuracy'])
 
 history = model.fit_generator(train_generator,
@@ -75,3 +91,4 @@ history = model.fit_generator(train_generator,
                               epochs=50)
 
 #loss: 0.1285 - accuracy: 0.9565 - val_loss: 1.3400 - val_accuracy: 0.5811 using adam
+#loss: 0.1956 - accuracy: 0.9197 - val_loss: 3.4767 - val_accuracy: 0.6486 using RMSProp

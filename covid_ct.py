@@ -7,7 +7,6 @@ from keras.layers import Flatten
 from keras.layers import Conv2D
 from keras.layers import Dense
 import tensorflow as tf
-from glob import glob
 import pandas as pd
 import numpy as np
 import cv2
@@ -70,7 +69,7 @@ model.add(MaxPool2D(pool_size=(2, 2)))
 model.add(Conv2D(128,(3, 3), activation='relu', padding="same"))
 model.add(MaxPool2D(pool_size=(2, 2)))
 
-model.add(Conv2D(128,(3, 3), activation='relu', padding="same"))
+model.add(Conv2D(64,(3, 3), activation='relu', padding="same"))
 model.add(MaxPool2D(pool_size=(2, 2)))
 
 model.add(Flatten())
@@ -89,6 +88,9 @@ history = model.fit_generator(train_generator,
                               verbose=1,
                               validation_data = validation_generator,
                               epochs=50)
+
+
+model.save('model.h5')
 
 #loss: 0.1285 - accuracy: 0.9565 - val_loss: 1.3400 - val_accuracy: 0.5811 using adam
 #loss: 0.1956 - accuracy: 0.9197 - val_loss: 3.4767 - val_accuracy: 0.6486 using RMSProp

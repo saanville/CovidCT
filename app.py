@@ -1,4 +1,4 @@
-from __future__ import division, print_function
+#from __future__ import division, print_function
 # coding=utf-8
 import sys
 import os
@@ -6,7 +6,6 @@ import glob
 import re
 import numpy as np
 import cv2
-# Keras
 from keras.applications.imagenet_utils import preprocess_input, decode_predictions
 from keras.models import load_model
 from keras.preprocessing import image
@@ -31,11 +30,9 @@ def model_predict(img_path):
     img = np.resize(img, [1, 150, 150, 1])
 
     
-    #print(img)
     res = model.predict(img)
-    a = labels[int(res[0])]
-    y = '' + a
-    return y
+    pred = labels[int(res[0])]
+    return pred
 
 
 
@@ -47,7 +44,7 @@ def index():
 @app.route('/predict', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
-        # get the image
+        # Get the image
         f = request.files['file']
 
         # Save the file to uploads folder

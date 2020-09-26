@@ -1,7 +1,7 @@
+gevent==20.6.2
 numpy==1.18.5 
 tensorflow==2.1.0
 pandas==1.0.5
 flask==1.1.2
 glob2==0.7
 keras==2.3.1
-gevent==20.9.0

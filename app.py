@@ -1,14 +1,15 @@
-#from __future__ import division, print_function
-# coding=utf-8
-import sys
-import os
-import glob
-import re
-import numpy as np
-#import cv2
+#must always be on top
+from __future__ import division, print_function
+
 from keras.applications.imagenet_utils import preprocess_input, decode_predictions
-from keras.models import load_model
 from keras.preprocessing import image
+from keras.models import load_model
+import numpy as np
+import glob
+import sys
+import cv2
+import re
+import os
 
 # Flask utils
 from flask import Flask, redirect, url_for, request, render_template
@@ -19,7 +20,7 @@ from gevent.pywsgi import WSGIServer
 app = Flask(__name__)
 
 model = load_model('model.h5')
-model._make_predict_function()
+#model._make_predict_function()
 
 labels = ["COVID negative", "COVID positive"]
 
@@ -43,6 +44,8 @@ def index():
 
 @app.route('/predict', methods=['GET', 'POST'])
 def upload():
+    if not os.path.exists('uploads'):
+        os.makedirs('uploads')
     if request.method == 'POST':
         # Get the image
         f = request.files['file']
